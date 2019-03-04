@@ -123,6 +123,54 @@ module.exports = function(webpackEnv) {
     return loaders;
   };
 
+  const app_code_babel_loader = {
+    loader: require.resolve('babel-loader'),
+    options: {
+      customize: require.resolve(
+        'babel-preset-react-app/webpack-overrides'
+      ),
+      // @remove-on-eject-begin
+      babelrc: false,
+      configFile: false,
+      presets: [require.resolve('babel-preset-react-app')],
+      // Make sure we have a unique cache identifier, erring on the
+      // side of caution.
+      // We remove this when the user ejects because the default
+      // is sane and uses Babel options. Instead of options, we use
+      // the react-scripts and babel-preset-react-app versions.
+      cacheIdentifier: getCacheIdentifier(
+        isEnvProduction
+          ? 'production'
+          : isEnvDevelopment && 'development',
+        [
+          'babel-plugin-named-asset-import',
+          'babel-preset-react-app',
+          'react-dev-utils',
+          'react-scripts',
+        ]
+      ),
+      // @remove-on-eject-end
+      plugins: [
+        [
+          require.resolve('babel-plugin-named-asset-import'),
+          {
+            loaderMap: {
+              svg: {
+                ReactComponent: '@svgr/webpack?-svgo![path]',
+              },
+            },
+          },
+        ],
+      ],
+      // This is a feature of `babel-loader` for webpack (not Babel itself).
+      // It enables caching results in ./node_modules/.cache/babel-loader/
+      // directory for faster rebuilds.
+      cacheDirectory: true,
+      cacheCompression: isEnvProduction,
+      compact: isEnvProduction,
+    }
+  };
+
   return {
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     // Stop compilation early in production
@@ -340,56 +388,24 @@ module.exports = function(webpackEnv) {
                 name: 'static/media/[name].[hash:8].[ext]',
               },
             },
+            // Process application Coffeescript with Coffee and Babel.
+            {
+              test: /\.(coffee|cjsx)$/,
+              include: paths.appSrc,
+              use: [
+                // for some absurd reason, webpack applies loaders last-to-first
+                // On a coffee file, coffee-loader will run **before** app_code_babel_loader
+                // BEACUSE the coffee-loader comes AFTER.  UGH.
+                app_code_babel_loader,
+                { loader: require.resolve('coffee-loader') }
+              ]
+            },
             // Process application JS with Babel.
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.appSrc,
-              loader: require.resolve('babel-loader'),
-              options: {
-                customize: require.resolve(
-                  'babel-preset-react-app/webpack-overrides'
-                ),
-                // @remove-on-eject-begin
-                babelrc: false,
-                configFile: false,
-                presets: [require.resolve('babel-preset-react-app')],
-                // Make sure we have a unique cache identifier, erring on the
-                // side of caution.
-                // We remove this when the user ejects because the default
-                // is sane and uses Babel options. Instead of options, we use
-                // the react-scripts and babel-preset-react-app versions.
-                cacheIdentifier: getCacheIdentifier(
-                  isEnvProduction
-                    ? 'production'
-                    : isEnvDevelopment && 'development',
-                  [
-                    'babel-plugin-named-asset-import',
-                    'babel-preset-react-app',
-                    'react-dev-utils',
-                    'react-scripts',
-                  ]
-                ),
-                // @remove-on-eject-end
-                plugins: [
-                  [
-                    require.resolve('babel-plugin-named-asset-import'),
-                    {
-                      loaderMap: {
-                        svg: {
-                          ReactComponent: '@svgr/webpack?-svgo![path]',
-                        },
-                      },
-                    },
-                  ],
-                ],
-                // This is a feature of `babel-loader` for webpack (not Babel itself).
-                // It enables caching results in ./node_modules/.cache/babel-loader/
-                // directory for faster rebuilds.
-                cacheDirectory: true,
-                cacheCompression: isEnvProduction,
-                compact: isEnvProduction,
-              },
+              use: [app_code_babel_loader]
             },
             // Process any JS outside of the app with Babel.
             // Unlike the application JS, we only compile the standard ES features.
@@ -512,7 +528,7 @@ module.exports = function(webpackEnv) {
               // its runtime that would otherwise be processed through "file" loader.
               // Also exclude `html` and `json` extensions so they get processed
               // by webpacks internal loaders.
-              exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+              exclude: [/\.(coffee|cjsx|js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
               options: {
                 name: 'static/media/[name].[hash:8].[ext]',
               },

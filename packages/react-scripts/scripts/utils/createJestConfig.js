@@ -22,7 +22,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
     : undefined;
 
   const config = {
-    collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts'],
+    collectCoverageFrom: ['src/**/*.{js,jsx,coffee,cjsx,ts,tsx}', '!src/**/*.d.ts'],
 
     // TODO: this breaks Yarn PnP on eject.
     // But we can't simply emit this because it'll be an absolute path.
@@ -39,22 +39,23 @@ module.exports = (resolve, rootDir, isEjecting) => {
 
     setupTestFrameworkScriptFile: setupTestsFile,
     testMatch: [
-      '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
-      '<rootDir>/src/**/?(*.)(spec|test).{js,jsx,ts,tsx}',
+      '<rootDir>/src/**/__tests__/**/*.{js,jsx,coffee,cjsx,ts,tsx}',
+      '<rootDir>/src/**/?(*.)(spec|test).{js,jsx,coffee,cjsx,ts,tsx}',
     ],
     testEnvironment: 'jsdom',
     testURL: 'http://localhost',
     transform: {
-      '^.+\\.(js|jsx|ts|tsx)$': isEjecting
+      '^.+\\.(coffee|cjsx)$': resolve('config/jest/coffeeTransform'),
+      '^.+\\.(js|jsx)$': isEjecting
         ? '<rootDir>/node_modules/babel-jest'
         : resolve('config/jest/babelTransform.js'),
       '^.+\\.css$': resolve('config/jest/cssTransform.js'),
-      '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': resolve(
+      '^(?!.*\\.(js|jsx|coffee|cjsx|ts|tsx|css|json)$)': resolve(
         'config/jest/fileTransform.js'
       ),
     },
     transformIgnorePatterns: [
-      '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$',
+      '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|coffee|cjsx|ts|tsx)$',
       '^.+\\.module\\.(css|sass|scss)$',
     ],
     moduleNameMapper: {

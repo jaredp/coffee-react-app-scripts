@@ -47,6 +47,8 @@ function getServedPath(appPackageJson) {
 }
 
 const moduleFileExtensions = [
+  'coffee',
+  'cjsx',
   'web.mjs',
   'mjs',
   'web.js',
