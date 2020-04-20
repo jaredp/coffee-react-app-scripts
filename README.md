@@ -9,6 +9,12 @@ Create React App works on macOS, Windows, and Linux.<br>
 If something doesn’t work, please [file an issue](https://github.com/facebook/create-react-app/issues/new).<br>
 If you have questions or need help, please ask in our [Spectrum](https://spectrum.chat/create-react-app) community.
 
+## Coffeescript
+
+This fork allows you to use Coffeescript. To use it, use:
+
+`yarn create react-app my-new-react-app --scripts-version=coffee-react-scripts --template=cra-template-coffeescript`
+
 ## Quick Overview
 
 ```sh
