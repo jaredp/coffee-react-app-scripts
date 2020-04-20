@@ -25,7 +25,10 @@ module.exports = (resolve, rootDir, isEjecting) => {
   const config = {
     roots: ['<rootDir>/src'],
 
-    collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts'],
+    collectCoverageFrom: [
+      'src/**/*.{js,jsx,ts,tsx,coffee,litcoffee,cjsx}',
+      '!src/**/*.d.ts',
+    ],
 
     setupFiles: [
       isEjecting
@@ -35,21 +38,22 @@ module.exports = (resolve, rootDir, isEjecting) => {
 
     setupFilesAfterEnv: setupTestsFile ? [setupTestsFile] : [],
     testMatch: [
-      '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
-      '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}',
+      '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx,coffee,litcoffee,cjsx}',
+      '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx,coffee,litcoffee,cjsx}',
     ],
     testEnvironment: 'jest-environment-jsdom-fourteen',
     transform: {
+      '^.+\\.(coffee|litcoffee|cjsx)$': resolve('config/jest/coffeeTransform'),
       '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': isEjecting
         ? '<rootDir>/node_modules/babel-jest'
         : resolve('config/jest/babelTransform.js'),
       '^.+\\.css$': resolve('config/jest/cssTransform.js'),
-      '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)': resolve(
+      '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|coffee|litcoffee|cjsx|css|json)$)': resolve(
         'config/jest/fileTransform.js'
       ),
     },
     transformIgnorePatterns: [
-      '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+      '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx|coffee|litcoffee|cjsx)$',
       '^.+\\.module\\.(css|sass|scss)$',
     ],
     modulePaths: modules.additionalModulePaths || [],
