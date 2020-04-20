@@ -41,6 +41,9 @@ const moduleFileExtensions = [
   'json',
   'web.jsx',
   'jsx',
+  'coffee',
+  'cjsx',
+  'litcoffee',
 ];
 
 // Resolve file paths in the same order as webpack
