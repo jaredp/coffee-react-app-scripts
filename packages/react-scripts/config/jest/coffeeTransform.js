@@ -1,14 +1,16 @@
 // from https://github.com/jimleuk/react-coffee-scripts
+// TODO: Remove on eject and provide a native alternative in createJestConfig.js
+'use strict';
 
 const coffee = require('coffeescript');
-const babelTransform = require('./babelTransform')
+const babelTransform = require('./babelTransform');
 
- module.exports = {
-    process: (src, path, ...rest) => {
-        if (coffee.helpers.isCoffee(path)) {
-            const compiled = coffee.compile(src, { bare: true })
-            return babelTransform.process(compiled, path, ...rest);
-        }
-        return src;
+module.exports = {
+  process: (src, path, ...rest) => {
+    if (coffee.helpers.isCoffee(path)) {
+      const compiled = coffee.compile(src, { bare: true });
+      return babelTransform.process(compiled, path, ...rest);
     }
+    return src;
+  },
 };
