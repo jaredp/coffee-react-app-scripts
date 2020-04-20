@@ -9,7 +9,7 @@
   "description": "The coffeescript template for Create React App.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/create-react-app.git",
+    "url": "https://github.com/jaredp/coffee-react-app-scripts.git",
     "directory": "packages/cra-template-coffeescript"
   },
   "license": "MIT",
@@ -17,7 +17,7 @@
     "node": ">=8"
   },
   "bugs": {
-    "url": "https://github.com/facebook/create-react-app/issues"
+    "url": "https://github.com/jaredp/coffee-react-app-scripts/issues"
   },
   "files": [
     "template",
